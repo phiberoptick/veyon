@@ -131,6 +131,14 @@ void Logger::initLogFile()
 void Logger::openLogFile()
 {
 	m_logFile->open( QFile::WriteOnly | QFile::Append | QFile::Unbuffered | QFile::Text );
+	if( m_logFile->symLinkTarget().isEmpty() == false )
+	{
+		vCritical() << m_logFile->fileName() << "is a symlink and will not be written to for security reasons";
+		m_logFile->close();
+		delete m_logFile;
+		m_logFile = nullptr;
+		return;
+	}
 	m_logFile->setPermissions( QFile::ReadOwner | QFile::WriteOwner );
 }
 
@@ -138,7 +146,10 @@ void Logger::openLogFile()
 
 void Logger::closeLogFile()
 {
-	m_logFile->close();
+	if( m_logFile )
+	{
+		m_logFile->close();
+	}
 }
 
 
@@ -146,7 +157,10 @@ void Logger::closeLogFile()
 void Logger::clearLogFile()
 {
 	closeLogFile();
-	m_logFile->remove();
+	if( m_logFile )
+	{
+		m_logFile->remove();
+	}
 	openLogFile();
 }
 
@@ -154,7 +168,7 @@ void Logger::clearLogFile()
 
 void Logger::rotateLogFile()
 {
-	if( m_logFileRotationCount < 1 )
+	if( m_logFileRotationCount < 1 || m_logFile == nullptr )
 	{
 		return;
 	}
