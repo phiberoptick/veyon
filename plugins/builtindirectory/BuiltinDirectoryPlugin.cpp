@@ -412,7 +412,8 @@ CommandLinePluginInterface::RunResult BuiltinDirectoryPlugin::handle_export( con
 	const auto& outputFileName = arguments.first();
 	QFile outputFile( outputFileName );
 
-	if( outputFile.open( QFile::WriteOnly | QFile::Truncate | QFile::Text ) == false )
+	if( outputFile.open( QFile::WriteOnly | QFile::Truncate | QFile::Text ) == false ||
+		outputFile.symLinkTarget().isEmpty() == false )
 	{
 		error( tr( "Can't open file \"%1\" for writing!" ).arg( outputFileName ) );
 		return Failed;
