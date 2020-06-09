@@ -87,6 +87,18 @@ void Screenshot::take( const ComputerControlInterface::Pointer& computerControlI
 		return;
 	}
 
+	if( outputFile.symLinkTarget().isEmpty() == false )
+	{
+		const auto msg = tr( "Screenshot file %1 is a symbolic link and will not be written to for security reasons." ).arg( m_fileName );
+		vCritical() << msg.toUtf8().constData();
+		if( qobject_cast<QApplication *>( QCoreApplication::instance() ) )
+		{
+			QMessageBox::critical( nullptr, tr( "Screenshot" ), msg );
+		}
+
+		return;
+	}
+
 	// construct caption
 	auto user = userLogin;
 	if( computerControlInterface->userFullName().isEmpty() == false )
