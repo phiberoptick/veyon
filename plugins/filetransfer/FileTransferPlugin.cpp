@@ -189,7 +189,8 @@ bool FileTransferPlugin::handleFeatureMessage( VeyonWorkerInterface& worker, con
 				return true;
 			}
 
-			if( m_currentFile.open( QFile::WriteOnly | QFile::Truncate ) )
+			if( m_currentFile.open( QFile::WriteOnly | QFile::Truncate ) &&
+				m_currentFile.symLinkTarget().isEmpty() )
 			{
 				m_currentTransferId = message.argument( TransferId ).toUuid();
 			}
