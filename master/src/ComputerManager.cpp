@@ -125,7 +125,8 @@ bool ComputerManager::saveComputerAndUsersList( const QString& fileName )
 	lines += QString();
 
 	QFile outputFile( fileName );
-	if( outputFile.open( QFile::WriteOnly | QFile::Truncate ) == false )
+	if( outputFile.open( QFile::WriteOnly | QFile::Truncate ) == false ||
+		outputFile.symLinkTarget().isEmpty() == false )
 	{
 		return false;
 	}
